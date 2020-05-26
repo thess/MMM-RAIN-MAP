@@ -26,6 +26,7 @@ Module.register("MMM-RAIN-MAP", {
 		zoom: 8,
 		zoomOutEach: 0,
 		zoomOutLevel: 2,
+		blankModule: "",
 	},
 	animationPosition: 0,
 	animationTimer: false,
@@ -34,6 +35,7 @@ Module.register("MMM-RAIN-MAP", {
 	radarLayers: [],
 	timestamps: [],
 	isCurrentlyRaining: false,
+	blankObj: null,
 
 	getStyles: () => {
 		return [
@@ -70,11 +72,13 @@ Module.register("MMM-RAIN-MAP", {
 	updateData: function () {
 		if (this.config.onlyOnRain) {
 			if (this.isCurrentlyRaining) {
+				if (blankObj) { blankObj.hide(); }
 				this.getTimeStamps();
 				this.show();
 			} else {
 				this.hide();
 				this.stop();
+				if (blankObj) { blankObj.show(); }
 			}
 		} else {
 			this.getTimeStamps();
@@ -97,6 +101,15 @@ Module.register("MMM-RAIN-MAP", {
 	},
 
 	notificationReceived: function (notification, payload, sender) {
+		if (this.config.blankModule != "" && notification == "DOM_OBJECTS_CREATED") {
+			let _this = this;
+			MM.getModules().enumerate(function(module) {
+				if (module.name == _this.config.blankModule) {
+					blankObj = module;
+					module.hide();
+				}
+			})
+		}
 		if (notification === "CURRENTWEATHER_DATA") {
 			try {
 				this.isCurrentlyRaining = this.config.iconsToShow.includes(
