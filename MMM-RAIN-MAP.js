@@ -72,13 +72,13 @@ Module.register("MMM-RAIN-MAP", {
 	updateData: function () {
 		if (this.config.onlyOnRain) {
 			if (this.isCurrentlyRaining) {
-				if (blankObj) { blankObj.hide(); }
+				if (this.blankObj) { this.blankObj.hide(); }
 				this.getTimeStamps();
 				this.show();
 			} else {
 				this.hide();
 				this.stop();
-				if (blankObj) { blankObj.show(); }
+				if (this.blankObj) { this.blankObj.show(); }
 			}
 		} else {
 			this.getTimeStamps();
@@ -105,7 +105,7 @@ Module.register("MMM-RAIN-MAP", {
 			let _this = this;
 			MM.getModules().enumerate(function(module) {
 				if (module.name == _this.config.blankModule) {
-					blankObj = module;
+					_this.blankObj = module;
 					module.hide();
 				}
 			})
@@ -173,3 +173,4 @@ Module.register("MMM-RAIN-MAP", {
 		return false;
 	},
 });
+
